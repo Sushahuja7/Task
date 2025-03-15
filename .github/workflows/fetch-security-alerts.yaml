@@ -1,0 +1,29 @@
+name: Fetch GitHub Security Alerts
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # Runs daily at 12:00 UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  fetch_alerts:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: read  # Required for fetching security alerts
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Fetch Security Alerts
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: python fetch_security_alerts.py
